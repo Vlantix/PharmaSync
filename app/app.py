@@ -1,15 +1,17 @@
-from flask import Flask, jsonify
+from fastapi import FastAPI
+from app.routes import router
 
+app = FastAPI(
+    title="PharmaSync",
+    description="Pharmaceutical Inventory Management System",
+    version="1.0.0"
+)
 
-app = Flask(__name__)
+app.include_router(router)
 
-@app.route("/", methods=["GET"])
+@app.get("/health")
 def health_check():
-    return jsonify({
-        "success": True,
-        "status": "Running...",
-        "message": "PharmaSync is healthy"
-    }), 200
-
-if __name__=="__main__":
-    app.run(host="0.0.0.0", debug=True)
+    return {
+        "status": "ok", 
+        "app": "PharmaSync"
+    }
