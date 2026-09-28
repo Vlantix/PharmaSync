@@ -5,7 +5,7 @@ from psycopg2.extensions import connection as Connection
 def get_all_users(conn: Connection) -> list[dict]:
     """
     Fetch all users.
-    Used by GET /users (Admin only).
+    Used by: GET /users.
     """
     with conn.cursor() as cur:
         cur.execute(
@@ -21,7 +21,13 @@ def get_all_users(conn: Connection) -> list[dict]:
 def get_user_by_id(conn: Connection, user_id: int) -> Optional[dict]:
     """
     Fetch a single user by ID.
-    Used by PATCH /users/{user_id} and DELETE /users/{user_id}.
+
+    Used by:
+    - GET    /users/{user_id}
+    - PATCH  /users/{user_id}
+    - DELETE /users/{user_id}
+    - Auth flows (registration response, token validation)
+
     Returns None if not found.
     """
     with conn.cursor() as cur:
@@ -48,7 +54,7 @@ def update_user(
     """
     Partially update a user using COALESCE.
     Only updates fields that are not None.
-    Used by PATCH /users/{user_id} (Admin only).
+    Used by: PATCH /users/{user_id}.
     """
     with conn.cursor() as cur:
         cur.execute(
@@ -71,16 +77,16 @@ def update_user(
 def deactivate_user(conn: Connection, user_id: int) -> Optional[dict]:
     """
     Soft delete a user by setting is_active to FALSE.
-    Used by DELETE /users/{user_id} (Admin only).
+    Used by: DELETE /users/{user_id}.
     Returns updated user or None if not found.
     """
     with conn.cursor() as cur:
         cur.execute(
             """
             UPDATE users
-            SET is_active = FALSE, updated_at = CURRENT_TIMESTAMP
+            SET is_active = FALSE, updated_at = clock_timestamp()
             WHERE id = %s
-            RETURNING id, username, email, role, is_active
+            RETURNING id, username, email, role, is_active, created_at, updated_at
             """,
             (user_id,)
         )
