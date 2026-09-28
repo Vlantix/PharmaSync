@@ -1,12 +1,8 @@
 from pydantic import ValidationError
 import pytest
-import time
 from app.models.users import UserCreate, UserUpdate, UserResponse
 from db.repository.users import (
-    get_all_users,
-    get_user_by_id,
-    update_user,
-    deactivate_user,
+    get_all_users, get_user_by_id, update_user, deactivate_user,
 )
 
 
