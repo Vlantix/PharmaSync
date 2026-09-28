@@ -3,6 +3,7 @@ API Routes (skeleton):
 POST   /auth/login
 POST   /auth/register            (Create new account - Admin only)
 POST   /auth/logout
+GET    /users/{user_id}          (Fetch single user by ID)
 PATCH  /users/{user_id}          (partial update on user)
 GET    /users
 DELETE /users/{user_id}          (Deactivate user - SOFT DELETE)
